@@ -25,27 +25,27 @@ Vvveb.ComponentsGroup['Elements'] = [
 "elements/tabs",
 "elements/accordion",
 "elements/flip-box",
-"elements/counter",
+// "elements/counter",
 "elements/svg-icon",
 "elements/figure",
-//"elements/testimonial",
+// "elements/testimonial",
 "elements/social-icons",
-//"elements/icon-list",
-//"elements/divider",
-//"elements/separator",
-//"elements/image-box",
-//"elements/icon-box",
-//"elements/animated-headline",
-//"elements/price-table",
-//"elements/price-list",
-//"elements/reviews",
+// "elements/icon-list",
+// "elements/divider",
+// "elements/separator",
+"elements/image-box",
+"elements/icon-box",
+// "elements/animated-headline",
+// "elements/price-table",
+// "elements/price-list",
+"elements/reviews",
 "elements/code",
-"elements/image-compare",
-//"elements/back-to-top",
-//"elements/blob",
-//"elements/image-shape",
-//"elements/image-shape",
-//"elements/rating",
+// "elements/image-compare",
+"elements/back-to-top",
+"elements/blob",
+"elements/image-shape",
+"elements/image-shape",
+"elements/rating",
 ];
 
 Vvveb.Components.extend("_base","elements/figure", {
@@ -1378,7 +1378,21 @@ Vvveb.Components.add("elements/reviews", {
     nodes: [".counter"],
     name: "Reviews",
     image: "icons/reviews.svg",
-    html: `<i class="font-icon la la-star"></i>`,
+    html: `<div class="card">
+				<div class="card-header">
+					Quote
+				</div>
+				<div class="card-body">
+					<figure>
+						<blockquote class="blockquote">
+							<p>A well-known quote, contained in a blockquote element.</p>
+						</blockquote>
+						<figcaption class="blockquote-footer">
+							Someone famous in <cite title="Source Title">Source Title</cite>
+						</figcaption>
+					</figure>
+				</div>
+			</div>`,
     properties: [
 	]
 });   

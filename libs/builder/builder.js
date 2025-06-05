@@ -678,90 +678,164 @@ Vvveb.WysiwygEditor = {
 		this.doc = doc;
 		let self = this;
 		
-		document.getElementById("bold-btn").addEventListener("click", function (e) {
+		// Очищаємо попередні обробники, видаливши старі та додавши нові
+		let boldBtn = document.getElementById("bold-btn");
+		let italicBtn = document.getElementById("italic-btn");
+		let underlineBtn = document.getElementById("underline-btn");
+		let strikeBtn = document.getElementById("strike-btn");
+		let linkBtn = document.getElementById("link-btn");
+		let foreColorBtn = document.getElementById("fore-color");
+		let backColorBtn = document.getElementById("back-color");
+		let fontSizeBtn = document.getElementById("font-size");
+		let fontFamilyBtn = document.getElementById("font-family");
+		let justifyBtn = document.getElementById("justify-btn");
+		
+		// Видаляємо старі обробники, створюючи клони елементів
+		if (boldBtn) {
+			let newBoldBtn = boldBtn.cloneNode(true);
+			boldBtn.parentNode.replaceChild(newBoldBtn, boldBtn);
+			boldBtn = newBoldBtn;
+			
+			boldBtn.addEventListener("click", function (e) {
 				//doc.execCommand('bold',false,null);
 				//self.editorSetStyle("b", {"font-weight" : "bold"}, true);
 				self.editorSetStyle(false, {"font-weight" : "bold"}, true);
 				e.preventDefault();
 				return false;
-		});
+			});
+		}
 
-		document.getElementById("italic-btn").addEventListener("click", function (e) {
+		if (italicBtn) {
+			let newItalicBtn = italicBtn.cloneNode(true);
+			italicBtn.parentNode.replaceChild(newItalicBtn, italicBtn);
+			italicBtn = newItalicBtn;
+			
+			italicBtn.addEventListener("click", function (e) {
 				//doc.execCommand('italic',false,null);
 				//self.editorSetStyle("i", {"font-style" : "italic"}, true);
 				self.editorSetStyle(false, {"font-style" : "italic"}, true);
 				e.preventDefault();
 				return false;
-		});
+			});
+		}
 
-		document.getElementById("underline-btn").addEventListener("click", function (e) {
+		if (underlineBtn) {
+			let newUnderlineBtn = underlineBtn.cloneNode(true);
+			underlineBtn.parentNode.replaceChild(newUnderlineBtn, underlineBtn);
+			underlineBtn = newUnderlineBtn;
+			
+			underlineBtn.addEventListener("click", function (e) {
 				//doc.execCommand('underline',false,null);
 				//self.editorSetStyle("u", {"text-decoration" : "underline"}, true);
 				self.editorSetStyle(false, {"text-decoration" : "underline"}, true);
 				e.preventDefault();
 				return false;
-		});
+			});
+		}
 		
-		document.getElementById("strike-btn").addEventListener("click", function (e) {
+		if (strikeBtn) {
+			let newStrikeBtn = strikeBtn.cloneNode(true);
+			strikeBtn.parentNode.replaceChild(newStrikeBtn, strikeBtn);
+			strikeBtn = newStrikeBtn;
+			
+			strikeBtn.addEventListener("click", function (e) {
 				//doc.execCommand('strikeThrough',false,null);
 				//self.editorSetStyle("strike",  {"text-decoration" : "line-through"}, true);
 				self.editorSetStyle(false,  {"text-decoration" : "line-through"}, true);
 				e.preventDefault();
 				return false;
-		});
+			});
+		}
 
-		document.getElementById("link-btn").addEventListener("click", function (e) {
+		if (linkBtn) {
+			let newLinkBtn = linkBtn.cloneNode(true);
+			linkBtn.parentNode.replaceChild(newLinkBtn, linkBtn);
+			linkBtn = newLinkBtn;
+			
+			linkBtn.addEventListener("click", function (e) {
 				//doc.execCommand('createLink',false,"#");
 				self.editorSetStyle("a");
 				e.preventDefault();
 				return false;
-		});
+			});
+		}
 
-		document.getElementById("fore-color").addEventListener("change", function (e) {
+		if (foreColorBtn) {
+			let newForeColorBtn = foreColorBtn.cloneNode(true);
+			foreColorBtn.parentNode.replaceChild(newForeColorBtn, foreColorBtn);
+			foreColorBtn = newForeColorBtn;
+			
+			foreColorBtn.addEventListener("change", function (e) {
 				//doc.execCommand('foreColor',false,this.value);
 				self.editorSetStyle(false, {"color" : this.value});
 				e.preventDefault();
 				return false;
-		});
-
+			});
+		}
 		
-		document.getElementById("back-color").addEventListener("change", function (e) {
+		if (backColorBtn) {
+			let newBackColorBtn = backColorBtn.cloneNode(true);
+			backColorBtn.parentNode.replaceChild(newBackColorBtn, backColorBtn);
+			backColorBtn = newBackColorBtn;
+			
+			backColorBtn.addEventListener("change", function (e) {
 				//doc.execCommand('hiliteColor',false,this.value);
 				self.editorSetStyle(false, {"background-color" : this.value});
 				e.preventDefault();
 				return false;
-		});
+			});
+		}
 		
-		document.getElementById("font-size").addEventListener("change", function (e) {
+		if (fontSizeBtn) {
+			let newFontSizeBtn = fontSizeBtn.cloneNode(true);
+			fontSizeBtn.parentNode.replaceChild(newFontSizeBtn, fontSizeBtn);
+			fontSizeBtn = newFontSizeBtn;
+			
+			fontSizeBtn.addEventListener("change", function (e) {
 				//doc.execCommand('fontSize',false,this.value);
 				self.editorSetStyle(false, {"font-size" : this.value});
 				e.preventDefault();
 				return false;
-		});
+			});
+		}
 
 		let sizes = "<option value=''> - Font size - </option>";
 		for (i = 1;i <= 128; i++) {
 			sizes += "<option value='"+ i +"px'>"+ i +"</option>";
 		}
-		document.getElementById("font-size").innerHTML = sizes;		
+		if (fontSizeBtn) {
+			fontSizeBtn.innerHTML = sizes;		
+		}
 
-		document.getElementById("font-family").addEventListener("change", function (e) {
+		if (fontFamilyBtn) {
+			let newFontFamilyBtn = fontFamilyBtn.cloneNode(true);
+			fontFamilyBtn.parentNode.replaceChild(newFontFamilyBtn, fontFamilyBtn);
+			fontFamilyBtn = newFontFamilyBtn;
+			
+			fontFamilyBtn.addEventListener("change", function (e) {
 				let option = this.options[this.selectedIndex];
 				let element = self.editorSetStyle(false, {"font-family" : this.value});
 				Vvveb.FontsManager.addFont(option.dataset.provider, this.value, element);
 				//doc.execCommand('fontName',false,this.value);
 				e.preventDefault();
 				return false;
-		});
+			});
+		}
 
-		document.getElementById("justify-btn").addEventListener("click", function (e) {
+		if (justifyBtn) {
+			let newJustifyBtn = justifyBtn.cloneNode(true);
+			justifyBtn.parentNode.replaceChild(newJustifyBtn, justifyBtn);
+			justifyBtn = newJustifyBtn;
+			
+			justifyBtn.addEventListener("click", function (e) {
 				//let command = "justify" + this.dataset.value;
 				//doc.execCommand(command,false,"#");
 				
 				self.editorSetStyle(false, {"text-align" : e.srcElement.dataset.value});
 				e.preventDefault();
 				return false;
-		});
+			});
+		}
 
 		doc.addEventListener('keydown', event => {
 		  if (event.key === 'Enter') {
@@ -2000,16 +2074,6 @@ Vvveb.Builder = {
 				
 				//if drag elements hovers over iframe switch to iframe mouseover handler	
 				return;
-				if (elementMouseIsOver && elementMouseIsOver.tagName == 'IFRAME') {
-					self.frameBody.dispatchEvent(new MouseEvent("mousemove", {
-								bubbles: true,
-								cancelable: true,
-					}));					
-					
-					//self.frameBody.trigger("mousemove", event);
-					event.stopPropagation();
-					self.selectNode(false);
-				}
 			}
 		});
 		
@@ -2145,7 +2209,6 @@ Vvveb.Builder = {
 			let bg = "bg-success";
 			if (true || data.success || text == "success") {		
 			} else {
-				bg = "bg-danger";
 			}
 			
 			displayToast(bg, "Save", data.message ?? data);					
@@ -2464,7 +2527,6 @@ Vvveb.Gui = {
 			if (true || data.success || data == "success") {		
 				document.querySelectorAll("#top-panel .save-btn").forEach(e => e.setAttribute("disabled", "true"));
 			} else {
-				bg = "bg-danger";
 			}
 			
 			displayToast(bg, "Save", data.message ?? data);

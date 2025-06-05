@@ -466,13 +466,15 @@ body
 	
 	#top-panel
 	{
+		position: relative;
 		height:$builder-header-top-height;
 		padding:0;
 		border-bottom:1px solid var(--bs-border-color);
 		text-align:center;
-		//background-color:rgba(var(--bs-secondary-color-rgb), 0.03);
+		background-color: var(--bs-body-bg);
 		//overflow:hidden;
 		width:100%;
+		z-index: 1;
 		
 		.btn-group
 		{

@@ -18031,11 +18031,14 @@ body {
         #vvveb-builder #right-panel .nav-link.active i {
           color: var(--bs-link-hover-color); }
   #vvveb-builder #top-panel {
+    position: relative;
     height: 35px;
     padding: 0;
     border-bottom: 1px solid var(--bs-border-color);
     text-align: center;
-    width: 100%; }
+    background-color: var(--bs-body-bg);
+    width: 100%;
+    z-index: 1; }
     #vvveb-builder #top-panel .btn-group .btn.btn-light {
       padding: 0.1rem 0.5rem;
       --bs-btn-active-bg: rgba(var(--bs-primary-rgb), 0.1);

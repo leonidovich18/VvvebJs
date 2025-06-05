@@ -982,10 +982,10 @@ let ComponentDeviceVisibility = {
 		sort: base_sort++,
 		section: advanced_section,
         htmlAttr: "class",
-        validValues: ["d-xs-none"],
+        validValues: ["d-none"],
         inputtype: ToggleInput,
         data: {
-            on: "d-xs-none",
+            on: "d-none",
             off: ""
         }
 	},{

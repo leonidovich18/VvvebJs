@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-bs-theme="auto">
+<html lang="en" class="light" data-theme="light">
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -11,49 +11,138 @@
     <base href="">
     <title>VvvebJs</title>
     
+    <link href="css/tailwind.css" rel="stylesheet">
     <link href="css/editor.css" rel="stylesheet">
+    <script>
+      // Check for dark mode preference
+      function setThemeMode(theme) {
+        if (theme === 'dark') {
+          document.documentElement.classList.add('dark');
+          document.documentElement.classList.remove('light');
+          document.documentElement.setAttribute('data-theme', 'dark');
+          
+          // Також встановлюємо для тіла документа
+          if (document.body) {
+            document.body.classList.add('bg-gray-900', 'text-gray-200');
+            document.body.classList.remove('bg-gray-100', 'text-gray-800');
+          }
+          
+          // Додаємо класи для темного режиму до головних елементів
+          document.querySelectorAll('#top-panel, #left-panel, #right-panel').forEach(panel => {
+            if (panel) {
+              panel.classList.add('bg-gray-800');
+              panel.classList.add('text-gray-200');
+              panel.classList.remove('bg-white');
+              panel.classList.remove('text-gray-800');
+            }
+          });
+          
+        } else {
+          document.documentElement.classList.remove('dark');
+          document.documentElement.classList.add('light');
+          document.documentElement.setAttribute('data-theme', 'light');
+          
+          // Також встановлюємо для тіла документа
+          if (document.body) {
+            document.body.classList.add('bg-gray-100', 'text-gray-800');
+            document.body.classList.remove('bg-gray-900', 'text-gray-200');
+          }
+          
+          // Видаляємо класи темного режиму з головних елементів
+          document.querySelectorAll('#top-panel, #left-panel, #right-panel').forEach(panel => {
+            if (panel) {
+              panel.classList.remove('bg-gray-800');
+              panel.classList.remove('text-gray-200');
+              panel.classList.add('bg-white');
+              panel.classList.add('text-gray-800');
+            }
+          });
+        }
+        
+        // Виведення інформації про поточні класи для відлагодження
+        console.log('Theme changed to:', theme);
+        console.log('HTML classes:', document.documentElement.className);
+        console.log('Body classes:', document.body.className);
+        if (document.getElementById('top-panel')) {
+          console.log('Top panel classes:', document.getElementById('top-panel').className);
+        }
+      }
+      
+      // Отримуємо поточну тему з локального сховища або використовуємо системні налаштування
+      const theme = 
+        localStorage.getItem('theme') || 
+        (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      
+      // Встановлюємо тему
+      document.addEventListener('DOMContentLoaded', function() {
+        setThemeMode(theme);
+        console.log('Initial theme set to:', theme);
+      });
+      
+      // Зберігаємо значення в localStorage
+      if (!localStorage.getItem('theme')) {
+        localStorage.setItem('theme', theme);
+      }
+      
+      // Додаємо слухач для системних змін теми
+      window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+        if (!localStorage.getItem('theme')) { // Якщо користувач не встановив власні налаштування
+          const newTheme = e.matches ? 'dark' : 'light';
+          setThemeMode(newTheme);
+        }
+      });
+      
+      // Додаємо функцію для переключення теми, яку можна викликати з кнопки
+      window.toggleDarkMode = function() {
+        const currentTheme = document.documentElement.getAttribute('data-theme');
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        setThemeMode(newTheme);
+        localStorage.setItem('theme', newTheme);
+        return newTheme;
+      };
+    </script>
   </head>
-<body>
+<body class="bg-gray-100 text-gray-800">
 
 	<div id="vvveb-builder">
-				<div id="top-panel">
-					<img src="img/redentu.svg" alt="Vvveb" class="float-start h-100 p-1" id="logo">
+				<div id="top-panel" class="w-full bg-white text-gray-800 shadow-sm">
+					<img src="img/redentu.svg" alt="Vvveb" class="float-left h-full p-1" id="logo">
 					
-					<div class="btn-group float-start" role="group">
-					  <button class="btn btn-light" title="Toggle file manager" id="toggle-file-manager-btn" data-vvveb-action="toggleFileManager" data-bs-toggle="button" aria-pressed="false">
+					<div class="inline-flex relative float-left" role="group">
+					  <button class="py-2 px-3 bg-gray-100 text-gray-800 border border-gray-300 hover:bg-gray-200" title="Toggle file manager" id="toggle-file-manager-btn" data-vvveb-action="toggleFileManager" data-bs-toggle="button" aria-pressed="false">
 						  <img src="libs/builder/icons/file-manager-layout.svg" width="18" height="18" alt="" role="presentation">
 					  </button>
 
-					  <button class="btn btn-light" title="Toggle left column" id="toggle-left-column-btn" data-vvveb-action="toggleLeftColumn" data-bs-toggle="button" aria-pressed="false">
+					  <button class="py-2 px-3 bg-gray-100 text-gray-800 border border-gray-300 hover:bg-gray-200" title="Toggle left column" id="toggle-left-column-btn" data-vvveb-action="toggleLeftColumn" data-bs-toggle="button" aria-pressed="false">
 						  <img src="libs/builder/icons/left-column-layout.svg" width="18" height="18" alt="" role="presentation">
 					  </button>
 					  
-					  <button class="btn btn-light" title="Toggle right column" id="toggle-right-column-btn" data-vvveb-action="toggleRightColumn" data-bs-toggle="button" aria-pressed="false">
+					  <button class="py-2 px-3 bg-gray-100 text-gray-800 border border-gray-300 hover:bg-gray-200" title="Toggle right column" id="toggle-right-column-btn" data-vvveb-action="toggleRightColumn" data-bs-toggle="button" aria-pressed="false">
 						  <img src="libs/builder/icons/right-column-layout.svg" width="18" height="18" alt="" role="presentation">
 					  </button>
 					</div>
 
-					<div class="btn-group float-start" role="group">
-					  <button class="btn btn-light" title="Undo (Ctrl/Cmd + Z)" id="undo-btn" data-vvveb-action="undo" data-vvveb-shortcut="ctrl+z">
+					<div class="inline-flex relative float-left ml-1" role="group">
+					  <button class="py-2 px-3 bg-gray-100 text-gray-800 border border-gray-300 hover:bg-gray-200" title="Undo (Ctrl/Cmd + Z)" id="undo-btn" data-vvveb-action="undo" data-vvveb-shortcut="ctrl+z">
 						  <i class="la la-undo"></i>
 					  </button>
 
-            <button class="btn btn-light" title="Redo (Ctrl/Cmd + Shift + Y)" id="redo-btn" data-vvveb-action="redo" data-vvveb-shortcut="ctrl+shift+z">
+            <button class="py-2 px-3 bg-gray-100 text-gray-800 border border-gray-300 hover:bg-gray-200" title="Redo (Ctrl/Cmd + Shift + Y)" id="redo-btn" data-vvveb-action="redo" data-vvveb-shortcut="ctrl+shift+z">
               <i class="la la-undo la-flip-horizontal"></i>
 					  </button>
 					</div>
 										
 					
-					<div class="btn-group float-start me-3" role="group">
+					<div class="inline-flex relative float-left mr-3" role="group">
 					  <!-- <button class="btn btn-light" title="Designer Mode (Free dragging)" id="designer-mode-btn" data-bs-toggle="button" aria-pressed="false" data-vvveb-action="setDesignerMode">
 						  <i class="la la-hand-rock"></i>
 					  </button> -->
 
-					  <button class="btn btn-light" title="Preview" id="preview-btn" type="button" data-bs-toggle="button" aria-pressed="false" data-vvveb-action="preview">
+					  <button class="py-2 px-3 bg-gray-100 text-gray-800 border border-gray-300 hover:bg-gray-200" title="Preview" id="preview-btn" type="button" data-bs-toggle="button" aria-pressed="false" data-vvveb-action="preview">
                 <i class="icon-eye-outline"></i>
 					  </button>
 
-					  <button class="btn btn-light" title="Fullscreen (F11)" id="fullscreen-btn" data-bs-toggle="button" aria-pressed="false" data-vvveb-action="fullscreen">
+					  <button class="py-2 px-3 bg-gray-100 text-gray-800 border border-gray-300 hover:bg-gray-200" title="Fullscreen (F11)" id="fullscreen-btn" data-bs-toggle="button" aria-pressed="false" data-vvveb-action="fullscreen">
 						  <i class="icon-expand-outline"></i>
 					  </button>
 
@@ -61,17 +150,17 @@
 						  <i class="icon-layers-outline"></i>
 					  </button> -->
 
-					  <button class="btn btn-light" title="Download" id="download-btn" data-vvveb-action="download" data-v-download="index.html">
+					  <button class="py-2 px-3 bg-gray-100 text-gray-800 border border-gray-300 hover:bg-gray-200" title="Download" id="download-btn" data-vvveb-action="download" data-v-download="index.html">
 						  <i class="la la-download"></i>
 					  </button>
 
 					</div>
 					
 								
-					<div class="btn-group me-2 float-end" role="group">
-					  <button class="btn btn-primary btn-sm btn-icon save-btn" title="Save (Ctrl + S)" id="save-btn" data-vvveb-action="saveAjax" data-vvveb-url="save.php" data-v-vvveb-shortcut="ctrl+e">
+					<div class="inline-flex relative mr-2 float-right" role="group">
+					  <button class="py-2 px-4 bg-blue-600 text-white hover:bg-blue-700 text-sm save-btn" title="Save (Ctrl + S)" id="save-btn" data-vvveb-action="saveAjax" data-vvveb-url="save.php" data-v-vvveb-shortcut="ctrl+e">
 
-						<span class="loading d-none">
+						<span class="loading hidden">
 						<i class="icon-save-outline"></i>
 						  <span class="spinner-border spinner-border-sm align-middle" role="status" aria-hidden="true">
 						  </span>
@@ -84,33 +173,33 @@
 					  </button>
 					</div>	
 
-					  <div class="float-end me-3">
+					  <div class="float-right mr-3">
 
-					    <button class="btn btn-light border-0 btn-sm btn-dark-mode" data-vvveb-action="darkMode">
+					    <button class="py-2 px-3 bg-gray-100 text-gray-800 border border-gray-300 hover:bg-gray-200 text-sm btn-dark-mode" data-vvveb-action="darkMode">
 							<i class="la la-sun"></i>
 						</button>
 						
-					    <a href="#" class="btn btn-light btn-sm btn-preview-url" target="blank" title="View page">
+					    <a href="#" class="py-2 px-3 bg-gray-100 text-gray-800 border border-gray-300 hover:bg-gray-200 text-sm inline-block" target="blank" title="View page">
 							<i class="la la-external-link-alt"></i>
 						</a>
 
-					    <div class="btn-group responsive-btns" role="group">
+					    <div class="inline-flex relative responsive-btns" role="group">
 
 
-		 			 <button id="mobile-view" data-view="mobile" class="btn btn-light"  title="Mobile view" data-vvveb-action="viewport">
+		 			 <button id="mobile-view" data-view="mobile" class="py-2 px-3 bg-gray-100 text-gray-800 border border-gray-300 hover:bg-gray-200"  title="Mobile view" data-vvveb-action="viewport">
 						  <i class="la la-mobile"></i>
 					  </button>
 
-					  <button id="tablet-view"  data-view="tablet" class="btn btn-light"  title="Tablet view" data-vvveb-action="viewport">
+					  <button id="tablet-view" data-view="tablet" class="py-2 px-3 bg-gray-100 text-gray-800 border border-gray-300 hover:bg-gray-200"  title="Tablet view" data-vvveb-action="viewport">
 						  <i class="la la-tablet"></i>
 					  </button>
 					  
-					  <button id="desktop-view"  data-view="" class="btn btn-light"  title="Desktop view" data-vvveb-action="viewport">
+					  <button id="desktop-view" data-view="" class="py-2 px-3 bg-gray-100 text-gray-800 border border-gray-300 hover:bg-gray-200"  title="Desktop view" data-vvveb-action="viewport">
 						  <i class="la la-laptop"></i>
 					  </button>
 			
 					<div class="percent">
-					   <input type="number" id="zoom" value="100" step="10" min="10" max="100" class="form-control" data-vvveb-action="zoomChange" data-vvveb-on="change">
+					   <input type="number" id="zoom" value="100" step="10" min="10" max="100" class="block w-full py-2 px-3 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-gray-300 rounded transition ease-in-out" data-vvveb-action="zoomChange" data-vvveb-on="change">
 
 					</div>
 					</div>
@@ -120,65 +209,63 @@
      				   </div>
 
 
-				<div id="left-panel">
-					  <div>
-					  <div id="filemanager"> 
-							<div class="header">
-								<span class="text-secondary"><i class="la la-file la-lg"></i> Pages</span>
+				<div id="left-panel" class="bg-white text-gray-800 shadow-md border-r border-gray-200">
+					  <div class="h-full flex flex-col">
+					  <div id="filemanager" class="flex flex-col border-b border-gray-200"> 
+							<div class="header py-2 px-4 border-b border-gray-200">
+								<span class="text-gray-500"><i class="la la-file la-lg"></i> Pages</span>
 
-									<div class="btn-group responsive-btns float-end" role="group">
-									  <button class="btn btn-outline-primary btn-sm btn-add" title="New page (Ctrl + Shift + P)" id="new-file-btn" data-vvveb-action="newPage" data-vvveb-shortcut="">
-											<span class="fw-normal">Add new</span>
+									<div class="inline-flex float-right" role="group">
+									  <button class="py-1 px-2 border border-blue-500 text-blue-500 hover:bg-blue-100 text-sm" title="New page (Ctrl + Shift + P)" id="new-file-btn" data-vvveb-action="newPage" data-vvveb-shortcut="">
+											<span class="font-normal">Add new</span>
 											<i class="icon-add"></i>
 									  </button>
 									</div>
 								</div>
 
-								<div class="tree">
+								<div class="tree overflow-auto p-2 hover:overflow-y-auto">
 									<ol>
 									</ol>
 								</div>
 					  </div>
 					  
 					  
-					 <div class="drag-elements">
+					 <div class="drag-elements flex-1 flex flex-col">
 						
 						<div class="header">
-							<ul class="nav nav-tabs  nav-fill" id="elements-tabs" role="tablist">
-							  <li class="nav-item sections-tab">
-								<a class="nav-link active" id="sections-tab" data-bs-toggle="tab" href="#sections" role="tab" aria-controls="sections" aria-selected="true" title="Sections">
+							<ul class="flex border-b border-gray-200" id="elements-tabs" role="tablist">
+							  <li class="sections-tab flex-1">
+								<a class="inline-block py-3 px-4 text-center border-b-2 border-blue-500 text-blue-500" id="sections-tab" data-bs-toggle="tab" href="#sections" role="tab" aria-controls="sections" aria-selected="true" title="Sections">
 									<i class="icon-layers-outline"></i>
 									<!-- img src="../../../js/vvvebjs/icons/list_group.svg" height="23" --> 
-									<!-- div><small>Sections</small></div -->
+									<div><small>Sections</small></div>
 								</a>
 							  </li>
-							  <li class="nav-item component-tab">
-								<a class="nav-link" id="components-tab" data-bs-toggle="tab" href="#components-tabs" role="tab" aria-controls="components" aria-selected="false" title="Components">
+							  <li class="block-tab flex-1">
+								<a class="inline-block py-3 px-4 text-center" id="blocks-tab" data-bs-toggle="tab" href="#blocks" role="tab" aria-controls="blocks" aria-selected="false" title="Blocks">
+									<i class="icon-grid-outline"></i>
+									<!-- img src="../../../js/vvvebjs/icons/product.svg" height="23" --> 
+									<div><small>Blocks</small></div>
+								</a>
+							  </li>
+							  <li class="component-tab flex-1">
+								<a class="inline-block py-3 px-4 text-center" id="components-tab" data-bs-toggle="tab" href="#components" role="tab" aria-controls="components" aria-selected="false" title="Components">
 									<i class="icon-cube-outline"></i>
 									<!-- img src="../../../js/vvvebjs/icons/product.svg" height="23" --> 
-									<!-- div><small>Components</small></div -->
+									<div><small>Components</small></div>
 								</a>
 							  </li>
-							  <!-- li class="nav-item sections-tab">
-								<a class="nav-link" id="sections-tab" data-bs-toggle="tab" href="#sections" role="tab" aria-controls="sections" aria-selected="false" title="Sections"><img src="../../../js/vvvebjs/icons/list_group.svg" width="24" height="23"> <div><small>Sections</small></div></a>
-							  </li -->
-							  <li class="nav-item component-properties-tab d-none">
-								<a class="nav-link" id="properties-tab" data-bs-toggle="tab" href="#properties" role="tab" aria-controls="properties" aria-selected="false" title="Properties">
+
+							  <li class="component-properties-tab flex-1" style="display:none">
+								<a class="inline-block py-3 px-4 text-center" id="properties-tab" data-bs-toggle="tab" href="#properties" role="tab" aria-controls="properties" aria-selected="false" title="Properties">
 									<i class="icon-settings-outline"></i>
-									<!-- img src="../../../js/vvvebjs/icons/filters.svg" height="23"--> 
-									<!-- div><small>Properties</small></div -->
+									<!-- img src="../../../js/vvvebjs/icons/product.svg" height="23" --> 
+									<div><small>Properties</small></div>
 								</a>
 							  </li>
-							  <!-- <li class="nav-item component-configuration-tab">
-								<a class="nav-link" id="configuration-tab" data-bs-toggle="tab" href="#configuration" role="tab" aria-controls="configuration" aria-selected="false" title="Styles">
-									<i class="icon-color-wand-outline"></i> -->
-									<!-- img src="../../../js/vvvebjs/icons/filters.svg" height="23"--> 
-									<!-- div><small>Properties</small></div -->
-								<!-- </a> -->
-							  <!-- </li> -->
 							</ul>
-					
-							<div class="tab-content">
+							
+							<div class="tab-content flex-1">
 							  
 							  
 							  <div class="tab-pane show active sections" id="sections" role="tabpanel" aria-labelledby="sections-tab">
@@ -208,17 +295,7 @@
 																			<div class="type">&nbsp;</div>
 																		</div>
 																	</div>
-																</div>
-															</div> 
-															<div class="section-item" draggable="true">
-																<div class="controls">
-																	<div class="handle"></div>
-																	<div class="info">
-																		<div class="name">&nbsp;
-																			<div class="type">&nbsp;</div>
-																		</div>
-																	</div>
-																</div>
+																</div> 
 															</div> 
 															<!-- div class="section-item" draggable="true">
 																<div class="controls">

@@ -2736,24 +2736,25 @@ Vvveb.Gui = {
 	},
 
 	darkMode: function () {
-		let theme = document.documentElement.getAttribute("data-bs-theme");
-		let icon = document.querySelector(".btn-dark-mode i");
-		
-		if (theme == "dark") {
-			theme = "light";
-			icon.classList.remove("la-moon")
-			icon.classList.add("la-sun");
-		} else if (theme == "light" || theme == "auto") {
-			theme = "dark";
-			icon.classList.remove("la-sun")
-			icon.classList.add("la-moon");
-		} else {
-			theme = "auto";
+		// Використовуємо глобальну функцію, яку ми визначили в editor.html
+		if (window.toggleDarkMode) {
+			const newTheme = window.toggleDarkMode();
+			
+			// Оновлюємо іконку
+			let icon = document.querySelector(".btn-dark-mode i");
+			if (icon) {
+				if (newTheme === "dark") {
+					icon.classList.remove("la-sun");
+					icon.classList.add("la-moon");
+				} else {
+					icon.classList.remove("la-moon");
+					icon.classList.add("la-sun");
+				}
+			}
+			
+			// Оновлюємо візуальні елементи
+			console.log("Theme switched to: " + newTheme);
 		}
-		
-		document.documentElement.setAttribute("data-bs-theme", theme);
-		localStorage.setItem('theme', theme);
-		//document.cookie = 'theme=' + theme;
 	},
 	
 	zoomChange: function () {
@@ -3877,10 +3878,17 @@ Vvveb.FileManager = {
 		//set loaded page as active
 		page.classList.add("active");
 		//open parent folder if closed
-		page.closest("[data-folder]")?.querySelector("input[type=checkbox]").setAttribute("checked", true);
+		// Безпечне встановлення атрибутів з перевіркою на null
+		const folderCheckbox = page.closest("[data-folder]")?.querySelector("input[type=checkbox]");
+		if (folderCheckbox) {
+			folderCheckbox.setAttribute("checked", true);
+		}
 		
 		this.currentPage = name;
-		document.querySelector(".btn-preview-url").setAttribute("href", url);
+		const previewUrlButton = document.querySelector(".btn-preview-url");
+		if (previewUrlButton) {
+			previewUrlButton.setAttribute("href", url);
+		}
 
 		//allow event to change page or url or cancel by setting url to false
 		let self = this;

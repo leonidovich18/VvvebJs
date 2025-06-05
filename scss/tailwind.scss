@@ -1,0 +1,216 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@reference tailwindcss/base;
+@reference tailwindcss/components;
+@reference tailwindcss/utilities;
+
+/* Імпортуємо міксини Bootstrap для сумісності */
+@import "_bootstrap-mixins-for-tailwind";
+
+/* Додамо змінні з Bootstrap для підтримки існуючого коду */
+:root {
+  --bs-body-color: #212529;
+  --bs-body-color-rgb: 33, 37, 41;
+  --bs-body-bg: #fff;
+  --bs-body-bg-rgb: 255, 255, 255;
+  --bs-border-color: #dee2e6;
+  --bs-link-color: #0d6efd;
+  --bs-link-color-rgb: 13, 110, 253;
+  --bs-primary: #0d6efd;
+  --bs-primary-rgb: 13, 110, 253;
+  --bs-secondary: #6c757d;
+  --bs-secondary-rgb: 108, 117, 125;
+}
+
+/* Додаємо темну тему */
+[data-bs-theme="dark"] {
+  --bs-body-color: #adb5bd;
+  --bs-body-color-rgb: 173, 181, 189;
+  --bs-body-bg: #212529;
+  --bs-body-bg-rgb: 33, 37, 41;
+  --bs-border-color: #495057;
+  --bs-link-color: #6ea8fe;
+  --bs-link-color-rgb: 110, 168, 254;
+}
+
+/* Утилітарні класи Bootstrap для сумісності */
+@layer components {
+  .clearfix::after {
+    display: block;
+    clear: both;
+    content: "";
+  }
+
+  .btn {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    font-weight: 500;
+    text-align: center;
+    vertical-align: middle;
+    cursor: pointer;
+    user-select: none;
+    border-radius: 0.25rem;
+    border: 1px solid transparent;
+  }
+
+  .btn-primary {
+    background-color: #0d6efd;
+    color: white;
+  }
+  .btn-primary:hover {
+    background-color: #0b5ed7;
+  }
+
+  .btn-secondary {
+    background-color: #6c757d;
+    color: white;
+  }
+  .btn-secondary:hover {
+    background-color: #5c636a;
+  }
+
+  .btn-light {
+    background-color: #f8f9fa;
+    color: #212529;
+    border-color: #dee2e6;
+  }
+  .btn-light:hover {
+    background-color: #e9ecef;
+  }
+
+  .btn-sm {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+  }
+
+  .btn-group {
+    display: inline-flex;
+    position: relative;
+    vertical-align: middle;
+  }
+
+  .float-start {
+    float: left;
+  }
+
+  .float-end {
+    float: right;
+  }
+
+  .me-2 {
+    margin-right: 0.5rem;
+  }
+
+  .me-3 {
+    margin-right: 1rem;
+  }
+
+  .form-control {
+    display: block;
+    width: 100%;
+    padding: 0.375rem 0.75rem;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #212529;
+    background-color: white;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  }
+
+  .nav {
+    display: flex;
+    flex-wrap: wrap;
+    list-style: none;
+    padding-left: 0;
+    margin-bottom: 0;
+  }
+
+  .nav-item {
+    list-style: none;
+  }
+
+  .nav-link {
+    display: block;
+    padding: 0.5rem 1rem;
+    text-decoration: none;
+  }
+
+  .nav-tabs {
+    border-bottom: 1px solid #dee2e6;
+  }
+
+  .nav-tabs .nav-link {
+    border-top-left-radius: 0.25rem;
+    border-top-right-radius: 0.25rem;
+    border: 1px solid transparent;
+  }
+
+  .nav-tabs .nav-link.active {
+    color: #0d6efd;
+    background-color: white;
+    border-color: #dee2e6 #dee2e6 white;
+  }
+
+  .tab-content > .tab-pane {
+    display: none;
+  }
+
+  .tab-content > .active {
+    display: block;
+  }
+
+  .container {
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .row {
+    display: flex;
+    flex-wrap: wrap;
+    margin-left: -1rem;
+    margin-right: -1rem;
+  }
+
+  .col {
+    flex: 1 0 0%;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .d-none {
+    display: none;
+  }
+
+  .p-1 {
+    padding: 0.25rem;
+  }
+
+  .p-2 {
+    padding: 0.5rem;
+  }
+
+  .p-3 {
+    padding: 0.75rem;
+  }
+
+  .p-4 {
+    padding: 1rem;
+  }
+
+  .h-100 {
+    height: 100%;
+  }
+}
+
+/* Решта стилів */
+@import "line-awesome/line-awesome";
+@import "ionicons";
+@import "_csstree";
+@import "_builder";
+@import "components/gallery"; 

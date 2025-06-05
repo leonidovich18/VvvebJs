@@ -22,39 +22,51 @@ const fileinclude = require('gulp-file-include');
 //const sass = require('gulp-sass')(require('sass'));
 const sass = require('gulp-sass')(require('node-sass'));
 const formatHtml = require('gulp-format-html');
-const through2 = require( 'through2' );    
+const through2 = require('through2');
+const postcss = require('gulp-postcss');
+const tailwindcssPlugin = require('@tailwindcss/postcss');
+const autoprefixer = require('autoprefixer');
 
-const touch = () => through2.obj( function( file, enc, cb ) {
-    if ( file.stat ) {
+const touch = () => through2.obj(function(file, enc, cb) {
+    if (file.stat) {
         file.stat.atime = file.stat.mtime = file.stat.ctime = new Date();
     }
-    cb( null, file );
+    cb(null, file);
 });
 
 gulp.task('fileinclude', function() {
-	//gulp.src(['./html/**/*.html', '!**/_*/**'])
-  return gulp.src(['./html/*.html', './html/**/*.html', '!**/_*/**'])
-    .pipe(fileinclude({
-      prefix: '@@',
-      basepath: '@file'
-    }))
-    .pipe(formatHtml())
-    //.pipe( touch() )
-    .pipe(gulp.dest('./'));
+    //gulp.src(['./html/**/*.html', '!**/_*/**'])
+    return gulp.src(['./html/*.html', './html/**/*.html', '!**/_*/**'])
+        .pipe(fileinclude({
+            prefix: '@@',
+            basepath: '@file'
+        }))
+        .pipe(formatHtml())
+        //.pipe(touch())
+        .pipe(gulp.dest('./'));
 });
 
 gulp.task('sass', function() {
-	//gulp.src(['./html/**/*.html', '!**/_*/**'])
-  return gulp.src(['./scss/*.scss'])
-    .pipe(sass())
-    .pipe(gulp.dest('./css'));
+    return gulp.src(['./scss/*.scss'])
+        .pipe(sass())
+        .pipe(gulp.dest('./css'));
 });
 
+gulp.task('tailwind', function() {
+    return gulp.src(['./scss/tailwind.scss'])
+        .pipe(sass())
+        .pipe(postcss([
+            tailwindcssPlugin('./tailwind.config.js'),
+            autoprefixer()
+        ]))
+        .pipe(gulp.dest('./css'));
+});
 
-gulp.task('watch', function () {
+gulp.task('watch', function() {
     gulp.watch(['./html/*.html', './html/**/*.html'], gulp.series('fileinclude'));
     gulp.watch(['./scss/*.scss'], gulp.series('sass'));
+    gulp.watch(['./scss/tailwind.scss', './tailwind.config.js'], gulp.series('tailwind'));
 });
 
 // Default Task
-gulp.task('default', gulp.series('fileinclude', 'sass'));
+gulp.task('default', gulp.series('fileinclude', 'sass', 'tailwind'));

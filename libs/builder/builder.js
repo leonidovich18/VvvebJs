@@ -893,7 +893,6 @@ Vvveb.Builder = {
 	dragMoveMutation : false,
 	isPreview : false,
 	runJsOnSetHtml : false,
-	designerMode : false,
 	highlightEnabled : false,
 	selectPadding: 0,
 	leftPanelWidth: 275,
@@ -1534,22 +1533,11 @@ Vvveb.Builder = {
 
 								prepend = false;
 							};
-							
-							if (self.designerMode) {
-								let parentOffset = offset(self.dragElement.offsetParent);
-								self.dragElement.style.position =  "absolute"; 
-								self.dragElement.style.x = x - (parentOffset.left - self.frameDoc.scrollLeft); 
-								self.dragElement.style.y = y - (parentOffset.top - self.frameDoc.scrollTop); 			
-							}
+						
 							
 					} catch(err) {
 						console.log(err);
 						return false;
-					}
-					
-					if (!self.designerMode && self.iconDrag) {
-						self.iconDrag.style.top  = (y + 60) + "px"; 
-						self.iconDrag.style.left = (x + self.leftPanelWidth + 10) + "px"; 			
 					}
 				}// else //uncomment else to disable parent highlighting when dragging
 				{
@@ -1612,8 +1600,6 @@ Vvveb.Builder = {
 
 				const node = self.dragElement;
 				self.selectNode(node);
-				Vvveb.TreeList.loadComponents();
-				Vvveb.TreeList.selectComponent(node);
 				self.loadNodeComponent(node);
 				//if component properties is loaded in left panel tab instead of right panel show tab
 				let propertiesTab = document.querySelector(".component-properties-tab a");
@@ -1701,7 +1687,6 @@ Vvveb.Builder = {
 					}
 					
 					self.selectNode(event.target);
-					Vvveb.TreeList.selectComponent(event.target);
 					self.loadNodeComponent(event.target);
 
 					if (Vvveb.component.resizable) {
@@ -1733,16 +1718,12 @@ Vvveb.Builder = {
 				document.querySelectorAll("#section-actions, #highlight-name, #select-box").forEach(el => el.style.display = "");
 				
 				
-				if (self.designerMode) {
-					self.dragElement = self.selectedEl;
-				} else {
-					self.selectedEl.style.position  = ""; 
-					self.selectedEl.style.top  = ""; 
-					self.selectedEl.style.left = ""; 			
+				self.selectedEl.style.position  = ""; 
+				self.selectedEl.style.top  = ""; 
+				self.selectedEl.style.left = ""; 			
 
-					self.selectedEl.classList.add("is-dragged");
-					self.dragElement = generateElements(Vvveb.dragHtml)[0];
-				}
+				self.selectedEl.classList.add("is-dragged");
+				self.dragElement = generateElements(Vvveb.dragHtml)[0];
 
 				const node = self.selectedEl;			
 
@@ -1807,7 +1788,6 @@ Vvveb.Builder = {
 			
 			self.selectNode(node);
 			self.loadNodeComponent(node);
-			Vvveb.TreeList.selectComponent(node);
 			
 			event.preventDefault();
 			return false;
@@ -1889,7 +1869,6 @@ Vvveb.Builder = {
 									nextSibling: node.nextSibling});
 
 			self.selectedEl.remove();
-			Vvveb.TreeList.loadComponents();
 			Vvveb.SectionList.loadSections();
 
 			event.preventDefault();
@@ -1941,8 +1920,6 @@ Vvveb.Builder = {
 
 			self.selectNode(node);
 			self.loadNodeComponent(node);
-			Vvveb.TreeList.loadComponents();
-			Vvveb.TreeList.selectComponent(node);
 
 			Vvveb.Undo.addMutation({type: 'childList', 
 									target: node.parentNode, 
@@ -2275,10 +2252,6 @@ Vvveb.Builder = {
 			});
 		});
 	},
-	
-	setDesignerMode: function(designerMode = false) {
-		this.designerMode = designerMode;
-	}
 
 };
 
@@ -2456,10 +2429,6 @@ Vvveb.Gui = {
 					case 'y':
 						e.preventDefault();
 						self.redo();
-						return;
-					case 'L':
-						e.preventDefault();
-						self.toggleTreeList();
 						return;
 					case 'e':
 						e.preventDefault();
@@ -2674,12 +2643,6 @@ Vvveb.Gui = {
 		}
 	},
 	
-	setDesignerMode : function () {
-		//aria-pressed attribute is updated after action is called and we check for false instead of true
-		let designerMode = this.attributes["aria-pressed"].value == "true";
-		Vvveb.Builder.setDesignerMode(designerMode);
-	},
-	
 	//layout
 	togglePanel: function (panel, cssVar) {
 		panel = document.querySelector(panel);
@@ -2725,14 +2688,6 @@ Vvveb.Gui = {
 			bsTab.show(); 
 		}
 
-	},
-
-	toggleTreeList: function () {
-		let treeList = document.getElementById("tree-list");
-		treeList.classList.toggle("d-none");
-		if (!treeList.offsetParent) {
-			document.getElementById("toggle-tree-list").classList.remove("active");
-		}
 	},
 
 	darkMode: function () {
@@ -3222,7 +3177,6 @@ Vvveb.SectionList = {
 				let node = section._node;
 				node.remove();
 				section.remove();
-				Vvveb.TreeList.loadComponents();
 				
 				e.stopPropagation();
 				e.preventDefault();
@@ -3322,8 +3276,6 @@ Vvveb.SectionList = {
 
 				
 				self.loadSections();
-				Vvveb.TreeList.loadComponents();
-				Vvveb.TreeList.selectComponent(node);
 
 				e.preventDefault();
 			}
@@ -3452,134 +3404,6 @@ Vvveb.SectionList = {
 			selected = e.target
 		}
 	},
-}
-
-Vvveb.TreeList = {
-	selector: '#tree-list',
-
-	container: null,
-	
-	tree: [],
-	
-	idToNode : {},
-	
-	init: function() {
-		// header move
-		this.container = document.querySelector(this.selector);
-		let header = this.container.querySelector(".header");
-		let isDown = false;
-		let offset = [0,0];
-		let self = this;
-
-		header.addEventListener('mousedown', function(e) {
-			if (e.which == 1) {//left click
-				isDown = true;
-				offset = [
-					self.container.offsetLeft - e.clientX,
-					self.container.offsetTop - e.clientY
-				];
-			}
-		}, true);
-
-		document.addEventListener('mouseup', function() {
-			isDown = false;
-		}, true);
-
-		document.addEventListener('mousemove', function(event) {
-			if (isDown) {
-				event.preventDefault();
-				let left = Math.max(event.clientX + offset[0], 0);
-				let top = Math.max(event.clientY + offset[1], 0);
-
-				if (left >= 0 && (left < (window.innerWidth - self.container.clientWidth))) self.container.style.left = left + "px";
-				if (top >= 0 && (top < (window.innerHeight - self.container.clientHeight))) self.container.style.top  = top + "px";
-			}
-		});
-
-		document.querySelector(this.selector).addEventListener("click", function (e) {
-			let element = e.target.closest("li[data-component]");
-			if (element) {
-				const node = element._treeNode;
-				node.scrollIntoView({behavior: "smooth", block: "center", inline: "center"});
-				//node.click();
-				Vvveb.Builder.selectNode(node);
-				Vvveb.Builder.loadNodeComponent(node);
-				
-				document.querySelector(self.selector + " .active")?.classList.remove("active");	
-				element.querySelector("label").classList.add("active");
-			}
-		})
-		
-		document.querySelector(this.selector).addEventListener("mousemove", function (e) {
-			let element = e.target.closest("li[data-component]");
-			if (element) {
-				const node = element._treeNode;
-				
-				node.dispatchEvent(new MouseEvent("mousemove", {
-					bubbles: true,
-					cancelable: true,
-				}));
-			}
-		})
-	},
-	
-	selectComponent: function(node) {
-		let id;
-		for (const i in this.idToNode) {
-			if (node == this.idToNode[i]) {
-				id = i;
-				break;
-			}
-		}
-
-		if (id) {
-			let element = document.getElementById("id" + id);
-
-			this.container.querySelector(".active")?.classList.remove("active");	
-			//collapse all 
-			let checkboxes = this.container.querySelectorAll("input[type=checkbox]:checked");
-			for (let i = 0, len = checkboxes.length; i < len; i++) {
-				checkboxes[i].checked = false;
-				let label = checkboxes[i].labels[0];
-				if (label) {
-					label.classList.remove("active");
-				}
-			}
-
-			//expand parents
-			if (element) {
-				let parent = element;
-				let current = element;
-				while (parent = current.closest("li")) {
-					current = parent.parentNode; 
-					let input = parent.querySelector("input");
-					if (input && input.hasAttribute("type") && input.type == "checkbox") {
-						input.checked = true;
-					}
-				}
-				
-				element.checked = true;
-				element.labels[0].classList.add("active");
-				element.scrollIntoView({behavior: "smooth", block: "center", inline: "center"});
-			}
-		}
-		
-		return false;
-	},
-	
-	loadComponents: function() {
-		let list = this.container.querySelector(".tree > ol");
-		//if navigator not visible don't load
-		if (list.offsetParent === null) return;
-		
-		this.tree     = [];
-		this.idToNode = {};
-		getNodeTree(window.FrameDocument.body, this.tree, {}, this.idToNode);
-		
-		let ol = drawComponentsTree(this.tree);
-		list.replaceWith(ol);
-		//list.replaceWith(html);
-	},	
 }
 
 Vvveb.FileManager = {
@@ -3894,7 +3718,6 @@ Vvveb.FileManager = {
 				function () { 
 					if (loadComponents) { Vvveb.FileManager.loadComponents(allowedComponents); }
 					Vvveb.SectionList.loadSections(allowedComponents); 
-					Vvveb.TreeList.loadComponents(); 
 					Vvveb.StyleManager.init(); 
 				});
 		}

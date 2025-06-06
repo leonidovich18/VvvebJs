@@ -17809,7 +17809,6 @@ https://github.com/givanz/VvvebJs
       .tree > ol li.file .file-actions {
         display: none;
         position: absolute;
-        background-color: var(--bs-body-bg);
         top: 0px;
         right: 2px; }
         .tree > ol li.file .file-actions .btn {
